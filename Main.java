@@ -21,6 +21,9 @@ public class Main {
         JLabel label = new JLabel("txt editor v1");
         label.setForeground(Color.white);
         frame.getContentPane().add(label);
+        JLabel label2 = new JLabel("current directory: none");
+        label2.setForeground(Color.white);
+        frame.getContentPane().add(label2);
         Container contentPane = frame.getContentPane();
         frame.getContentPane().setBackground(Color.DARK_GRAY);
         SpringLayout layout = new SpringLayout();
@@ -29,6 +32,8 @@ public class Main {
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, label,0,SpringLayout.HORIZONTAL_CENTER, contentPane);
         JTextArea area= new JTextArea("",39,123);
         contentPane.add(area);
+        layout.putConstraint(SpringLayout.SOUTH, label2,-10,SpringLayout.SOUTH, contentPane);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, label2,0,SpringLayout.HORIZONTAL_CENTER, contentPane);
 
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, area,0,SpringLayout.VERTICAL_CENTER, contentPane);
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, area,0,SpringLayout.HORIZONTAL_CENTER, contentPane);
@@ -41,6 +46,7 @@ public class Main {
         layout.putConstraint(SpringLayout.WEST, jb3,70,SpringLayout.WEST, contentPane);
         layout.putConstraint(SpringLayout.NORTH, jb3,0,SpringLayout.NORTH, contentPane);
         contentPane.add(jb1);
+        contentPane.add(jb3);
 
         JButton jb4=new JButton("Clear");
         layout.putConstraint(SpringLayout.EAST, jb4,0,SpringLayout.EAST, contentPane);
@@ -48,12 +54,13 @@ public class Main {
         contentPane.add(jb4);
         jb4.addActionListener(new ActionListener() {
                                   @Override
-                                  public void actionPerformed(ActionEvent e) {
-                                      area.setText("");
+                                  public void actionPerformed(ActionEvent e) {area.setText("");
+
                                   }
+
                               });
 
-                contentPane.add(jb3);
+
         jb1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,6 +71,7 @@ public class Main {
 
                 String fn = filename;
                 Path path = Paths.get(fn);
+                label2.setText("current directory: "+filename);
                 try {
                     byte[] bytes = Files.readAllBytes(path);
                     java.util.List<String> allLines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -77,6 +85,18 @@ public class Main {
                     layout.putConstraint(SpringLayout.WEST, jb3,140,SpringLayout.WEST, contentPane);
                     layout.putConstraint(SpringLayout.NORTH, jb3,0,SpringLayout.NORTH, contentPane);
                     contentPane.add(jb2);
+
+                    jb4.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {area.setText("");
+                            layout.putConstraint(SpringLayout.WEST, jb3,70,SpringLayout.WEST, contentPane);
+                            layout.putConstraint(SpringLayout.NORTH, jb3,0,SpringLayout.NORTH, contentPane);
+                            label2.setText("current directory: none");
+                            contentPane.remove(jb2);
+
+                        }
+
+                    });
 
                     jb2.addActionListener(new ActionListener(){
                         public void actionPerformed(ActionEvent e){
@@ -94,6 +114,8 @@ public class Main {
                 }}
 
 
+
+
         });
 
         jb3.addActionListener(new ActionListener() {
@@ -101,6 +123,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser c = new JFileChooser();
                 int rVal = c.showSaveDialog(null);
+                label2.setText("current directory: "+c.getSelectedFile().getAbsolutePath());
                 try {
                     PrintWriter pw=new PrintWriter(c.getSelectedFile().getAbsolutePath());
                     area.write(pw);
